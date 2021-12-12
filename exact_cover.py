@@ -203,6 +203,4 @@ class ExactCover:
             j = j.down
 
     def solve(self):
-        for solution in self._solve_rec([]):
-            print(solution)
-
+        yield from self._solver_rec([])
