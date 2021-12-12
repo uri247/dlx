@@ -150,8 +150,8 @@ class ExactCover:
         while i != column:
             j = i.right
             while j != i:
+                j.remove_vertically()
                 if j != j.row:
-                    j.remove_vertically()
                     j.column.num_options -= 1
                 j = j.right
             i = i.down
@@ -162,8 +162,8 @@ class ExactCover:
         while i != column:
             j = i.left
             while j != i:
+                j.restore_vertically()
                 if j != j.row:
-                    j.restore_vertically()
                     j.column.num_options += 1
                 j = j.left
             i = i.up
@@ -182,3 +182,27 @@ class ExactCover:
         while j != row:
             cls.uncover_column(j.column)
             j = j.left
+
+    def _solve_rec(self, solution):
+        if self.matrix.right == self.matrix:
+            # We have a solution
+            yield solution
+            return
+
+        col = min(self.column_iter(), key=lambda x: x.num_options)
+        if col.num_options == 0:
+            return
+        j = col.down
+        while j != col:
+            solution.append(j.row.name)
+            self.select_option(j.row)
+            yield from self._solve_rec(solution)
+
+            solution.pop()
+            self.restore_option(j.row)
+            j = j.down
+
+    def solve(self):
+        for solution in self._solve_rec([]):
+            print(solution)
+
