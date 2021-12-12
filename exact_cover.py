@@ -12,6 +12,9 @@ class Option:
         self.name = name
         self.items = items
 
+    def __repr__(self):
+        return f'{{{self.name}: [{", ".join(i for i in self.items)}]'
+
 
 class Cell:
 
@@ -203,4 +206,4 @@ class ExactCover:
             j = j.down
 
     def solve(self):
-        yield from self._solver_rec([])
+        yield from self._solve_rec([])
